@@ -24,6 +24,8 @@ function main() {
   
   deleteButton.addEventListener('click', () => handleDelete(currentValue));
   clearButton.addEventListener('click', () => handleClear(info, currentValue, equation));
+  
+  signButton.addEventListener('click', () => handleSign(currentValue));
 }
 
 function handleNumber(number, currentValue) {
@@ -75,6 +77,10 @@ function handleClear(info, currentValue, equation) {
   info.currentOperator = info.previousValue = '';
   currentValue.innerText = '0';
   equation.innerText = '';
+}
+
+function handleSign(currentValue) {
+  currentValue.innerText = -1 * (+currentValue.innerText);
 }
 
 document.addEventListener('DOMContentLoaded', main);
