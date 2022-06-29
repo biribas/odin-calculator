@@ -3,7 +3,7 @@ function main() {
     previousValue: '',
     currentOperator: '' 
   }
-
+  
   const numberButtons = document.querySelectorAll('.number');
   const operatorButtons = document.querySelectorAll('.operator');
   const equalButton = document.querySelector('#equal');
@@ -19,7 +19,7 @@ function main() {
 
   [...numberButtons].forEach(button => button.addEventListener('click', e => addNumber(e.target.innerText, currentValue)));
   [...operatorButtons].forEach(button => button.addEventListener('click', e => addOperator(e.target.innerText, info, currentValue, equation)));
-  equalButton.addEventListener('click', () => evaluate(info, currentValue, equation));
+  equalButton.addEventListener('click', () => handleEqual(info, currentValue, equation));
   
   deleteButton.addEventListener('click', () => deleteInput(currentValue));
   clearButton.addEventListener('click', () => clear(info, currentValue, equation));
@@ -38,43 +38,49 @@ function addNumber(number, currentValue) {
 }
 
 function addOperator(operator, info, currentValue, equation) {
+  if (info.previousValue === '')
+    info.previousValue = currentValue.innerText;
+  else {
+    info.previousValue = operate(+info.previousValue, info.currentOperator, +currentValue.innerText);
+  }
   info.currentOperator = operator;
-  info.previousValue = currentValue.innerText;
   currentValue.innerText = '0';
   equation.innerText = `${info.previousValue} ${operator}`;
 }
 
-function evaluate(info, currentValue, equation) {
+function handleEqual(info, currentValue, equation) {
   if (info.currentOperator === '') return;
-  const operation = handleOperation(info.currentOperator);
-  const result = operation(+info.previousValue, +currentValue.innerText);
+  const result = operate(+info.previousValue, info.currentOperator, +currentValue.innerText);
   if (isNum(result)) {
     equation.innerText = `${info.previousValue} ${info.currentOperator} ${currentValue.innerText} =`;
     info.previousValue = currentValue.innerText;
     currentValue.innerText = result;
   }
   else {
-    equation.innerText = '';
-    info.previousValue = '';
+    clear(info, currentValue, equation);
     currentValue.innerText = 'Math error';
   }
 }
 
-function handleOperation(operator) {
-  switch (operator) {
-    case '+':
-      return (a, b) => a + b;
-    case '-':
-      return (a, b) => a - b;
-    case 'x':
-      return (a, b) => a * b;
-    case '÷':
-      return (a, b) => a / b;
-    case 'mod': 
-      return (a, b) => a % b;
-    default:
-      return () => console.error('Invalid Operator');
+function operate(a, operator, b) {
+  const f = op => {
+    switch (op) {
+      case '+':
+        return (a, b) => a + b;
+      case '-':
+        return (a, b) => a - b;
+      case 'x':
+        return (a, b) => a * b;
+      case '÷':
+        return (a, b) => a / b;
+      case 'mod': 
+        return (a, b) => a % b;
+      default:
+        return () => console.error('Invalid Operator');
+    }
   }
+  
+  return f(operator)(a, b);
 }
 
 function deleteInput(currentValue) {
@@ -85,8 +91,8 @@ function deleteInput(currentValue) {
 
 function clear(info, currentValue, equation) {
   info.currentOperator = info.previousValue = '';
-  currentValue.innerText = '0';
   equation.innerText = '';
+  currentValue.innerText = '0';
 }
 
 function toggleSign(currentValue) {
