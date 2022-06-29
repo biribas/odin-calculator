@@ -23,6 +23,7 @@ function main() {
   equalButton.addEventListener('click', () => handleEqual(info, currentValue, equation));
   
   deleteButton.addEventListener('click', () => handleDelete(currentValue));
+  clearButton.addEventListener('click', () => handleClear(info, currentValue, equation));
 }
 
 function handleNumber(number, currentValue) {
@@ -68,6 +69,12 @@ function handleDelete(currentValue) {
   currentValue.innerText = currentValue.innerText.slice(0, -1);
   if (currentValue.innerText.length === 0) 
     currentValue.innerText = '0';
+}
+
+function handleClear(info, currentValue, equation) {
+  info.currentOperator = info.previousValue = '';
+  currentValue.innerText = '0';
+  equation.innerText = '';
 }
 
 document.addEventListener('DOMContentLoaded', main);
