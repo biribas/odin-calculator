@@ -5,11 +5,8 @@
   user-select: none;
 }
 
-.flex {
-  display: flex;
-}
-
 body {
+  display: flex;
   height: 100vh;
   margin: 0;
   flex-direction: column;
@@ -47,7 +44,7 @@ body {
   font-size: 1rem;
 } 
 
-#screen > #number {
+#screen > #currentValue {
   font-size: 1.5rem;
 }
 #buttons {
@@ -83,7 +80,7 @@ body {
   transform: scale(0.97);
 }
 
-#buttons .number {
+#buttons .output {
   background-color: #d5d5d5;
 }
 
