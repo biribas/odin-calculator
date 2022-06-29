@@ -7,13 +7,13 @@ function main() {
 
   const numberButtons = document.querySelectorAll('.number');
   const operatorButtons = document.querySelectorAll('.operator');
+  const equalButton = document.querySelector('#equal');
 
   const deleteButton = document.querySelector('#delete');
   const clearButton = document.querySelector('#clear');
 
   const signButton = document.querySelector('#sign');
   const pointButton = document.querySelector('#point');
-  const equalButton = document.querySelector('#equal');
 
   const currentValue = document.querySelector('#currentValue');
   const equation = document.querySelector('#equation');
@@ -21,6 +21,8 @@ function main() {
   [...numberButtons].forEach(button => button.addEventListener('click', e => handleNumber(e.target.innerText, currentValue)));
   [...operatorButtons].forEach(button => button.addEventListener('click', e => handleOperator(e.target.innerText, info, currentValue, equation)));
   equalButton.addEventListener('click', () => handleEqual(info, currentValue, equation));
+  
+  deleteButton.addEventListener('click', () => handleDelete(currentValue));
 }
 
 function handleNumber(number, currentValue) {
@@ -60,6 +62,12 @@ function handleOperation(operator) {
     default:
       return () => console.error('Invalid Operator');
   }
+}
+
+function handleDelete(currentValue) {
+  currentValue.innerText = currentValue.innerText.slice(0, -1);
+  if (currentValue.innerText.length === 0) 
+    currentValue.innerText = '0';
 }
 
 document.addEventListener('DOMContentLoaded', main);
