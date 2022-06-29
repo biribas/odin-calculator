@@ -1,4 +1,3 @@
-
 function main() {
   const info = {
     previousValue: '',
@@ -26,7 +25,10 @@ function main() {
   clearButton.addEventListener('click', () => handleClear(info, currentValue, equation));
   
   signButton.addEventListener('click', () => handleSign(currentValue));
+  pointButton.addEventListener('click', () => handlePoint(currentValue));
 }
+
+document.addEventListener('DOMContentLoaded', main);
 
 function handleNumber(number, currentValue) {
   if (currentValue.innerText === '0')
@@ -83,4 +85,7 @@ function handleSign(currentValue) {
   currentValue.innerText = -1 * (+currentValue.innerText);
 }
 
-document.addEventListener('DOMContentLoaded', main);
+function handlePoint(currentValue) {
+  if (currentValue.innerText.includes('.')) return;
+  currentValue.innerText = currentValue.innerText + '.';
+}
