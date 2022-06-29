@@ -31,7 +31,7 @@ function main() {
 document.addEventListener('DOMContentLoaded', main);
 
 function handleNumber(number, currentValue) {
-  if (currentValue.innerText === '0')
+  if (currentValue.innerText === '0' || !isNum(currentValue.innerText))
     currentValue.innerText = number;
   else if (currentValue.innerText.length < 15)
     currentValue.innerText = currentValue.innerText + number;
@@ -45,11 +45,19 @@ function handleOperator(operator, info, currentValue, equation) {
 }
 
 function handleEqual(info, currentValue, equation) {
+  if (info.currentOperator === '') return;
   const operation = handleOperation(info.currentOperator);
-  const result = operation(+info.previousValue, +currentValue.innerText)
-  equation.innerText = `${info.previousValue} ${info.currentOperator} ${currentValue.innerText} =`;
-  info.previousValue = currentValue.innerText;
-  currentValue.innerText = result;
+  const result = operation(+info.previousValue, +currentValue.innerText);
+  if (isNum(result)) {
+    equation.innerText = `${info.previousValue} ${info.currentOperator} ${currentValue.innerText} =`;
+    info.previousValue = currentValue.innerText;
+    currentValue.innerText = result;
+  }
+  else {
+    equation.innerText = '';
+    info.previousValue = '';
+    currentValue.innerText = 'Math error';
+  }
 }
 
 function handleOperation(operator) {
@@ -88,4 +96,11 @@ function handleSign(currentValue) {
 function handlePoint(currentValue) {
   if (currentValue.innerText.includes('.')) return;
   currentValue.innerText = currentValue.innerText + '.';
+}
+
+function isNum(num) {
+  if (isFinite(num) && !isNaN(num))
+    return true;
+
+  return false;
 }
