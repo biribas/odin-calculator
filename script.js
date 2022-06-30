@@ -10,7 +10,7 @@ const elements = {
   deleteButton: document.querySelector('#delete'),
   clearButton: document.querySelector('#clear'),
   signButton: document.querySelector('#sign'),
-  pointButton: document.querySelector('#sign'),
+  pointButton: document.querySelector('#point'),
   currentValue: document.querySelector('#currentValue'),
   equation: document.querySelector('#equation')
 }
@@ -20,11 +20,11 @@ function main() {
   [...elements.operatorButtons].forEach(button => button.addEventListener('click', e => addOperator(e.target.innerText)));
   elements.equalButton.addEventListener('click', handleEqual);
   
-  elements.deleteButton.addEventListener('click', () => deleteInput(currentValue));
-  elements.clearButton.addEventListener('click', () => clear(info, currentValue, equation));
+  elements.deleteButton.addEventListener('click', deleteInput);
+  elements.clearButton.addEventListener('click', clear);
   
-  elements.signButton.addEventListener('click', () => toggleSign(currentValue));
-  elements.pointButton.addEventListener('click', () => addPoint(currentValue));
+  elements.signButton.addEventListener('click', toggleSign);
+  elements.pointButton.addEventListener('click', addPoint);
 }
 
 document.addEventListener('DOMContentLoaded', main);
@@ -86,8 +86,8 @@ function operate() {
     }
   }
 
-  const a = info.previousValue;
-  const b = elements.currentValue.innerText;
+  const a = +info.previousValue;
+  const b = +elements.currentValue.innerText;
   const operator = info.currentOperator;
   const result = f(operator)(a, b);
 
