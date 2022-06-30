@@ -39,9 +39,9 @@ function addNumber(buttonNumber) {
 
 function addOperator(operator) {
   if (!isNum(elements.currentValue.innerText)) return;
-  let result = elements.currentValue.innerText;
 
-  if (isNum(info.previousValue)) {
+  let result = elements.currentValue.innerText;
+  if (isNum(info.previousValue) && !elements.equation.innerText.includes('=')) {
     result = operate();
     if (!isNum(result)) {
       clear();
@@ -118,4 +118,4 @@ function addPoint() {
   elements.currentValue.innerText += '.';
 }
 
-const isNum = num => !(isNaN(num) && isNum(parseFloat(num)));
+const isNum = num => !(isNaN(num) || isNaN(parseFloat(num))) && isFinite(num);
