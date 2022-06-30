@@ -1,6 +1,7 @@
 const info = {
   previousValue: '',
-  currentOperator: '' 
+  currentOperator: '',
+  fractionDigits: 13 
 }
 
 const elements = {
@@ -71,6 +72,16 @@ function handleEqual() {
   elements.currentValue.innerText = result;
 }
 
+function handleFractionDigits(num) {
+  const digits = info.fractionDigits;
+  if (num.toString().includes('e+'))
+    return num.toExponential(digits);
+  if (num.toString().includes('.')) 
+    return num.toString().split('.')[1].length > digits ? num.toFixed(digits) : num;
+
+  return num;
+}
+
 function operate() {
   const f = operator => {
     switch (operator) {
@@ -94,7 +105,7 @@ function operate() {
   const operator = info.currentOperator;
   const result = f(operator)(a, b);
 
-  return isNum(result) ? result : 'Math error';
+  return isNum(result) ? handleFractionDigits(result) : 'Math error';
 }
 
 function deleteInput() {
