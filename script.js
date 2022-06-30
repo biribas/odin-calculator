@@ -1,70 +1,76 @@
+const info = {
+  previousValue: '',
+  currentOperator: '' 
+}
+
+const elements = {
+  numberButtons: document.querySelectorAll('.number'),
+  operatorButtons: document.querySelectorAll('.operator'),
+  equalButton: document.querySelector('#equal'),
+  deleteButton: document.querySelector('#delete'),
+  clearButton: document.querySelector('#clear'),
+  signButton: document.querySelector('#sign'),
+  pointButton: document.querySelector('#sign'),
+  currentValue: document.querySelector('#currentValue'),
+  equation: document.querySelector('#equation')
+}
+
 function main() {
-  const info = {
-    previousValue: '',
-    currentOperator: '' 
-  }
+  [...elements.numberButtons].forEach(button => button.addEventListener('click', e => addNumber(e.target.innerText)));
+  [...elements.operatorButtons].forEach(button => button.addEventListener('click', e => addOperator(e.target.innerText)));
+  elements.equalButton.addEventListener('click', handleEqual);
   
-  const numberButtons = document.querySelectorAll('.number');
-  const operatorButtons = document.querySelectorAll('.operator');
-  const equalButton = document.querySelector('#equal');
-
-  const deleteButton = document.querySelector('#delete');
-  const clearButton = document.querySelector('#clear');
-
-  const signButton = document.querySelector('#sign');
-  const pointButton = document.querySelector('#point');
-
-  const currentValue = document.querySelector('#currentValue');
-  const equation = document.querySelector('#equation');
-
-  [...numberButtons].forEach(button => button.addEventListener('click', e => addNumber(e.target.innerText, currentValue)));
-  [...operatorButtons].forEach(button => button.addEventListener('click', e => addOperator(e.target.innerText, info, currentValue, equation)));
-  equalButton.addEventListener('click', () => handleEqual(info, currentValue, equation));
+  elements.deleteButton.addEventListener('click', () => deleteInput(currentValue));
+  elements.clearButton.addEventListener('click', () => clear(info, currentValue, equation));
   
-  deleteButton.addEventListener('click', () => deleteInput(currentValue));
-  clearButton.addEventListener('click', () => clear(info, currentValue, equation));
-  
-  signButton.addEventListener('click', () => toggleSign(currentValue));
-  pointButton.addEventListener('click', () => addPoint(currentValue));
+  elements.signButton.addEventListener('click', () => toggleSign(currentValue));
+  elements.pointButton.addEventListener('click', () => addPoint(currentValue));
 }
 
 document.addEventListener('DOMContentLoaded', main);
 
-function addNumber(number, currentValue) {
-  if (currentValue.innerText === '0' || !isNum(currentValue.innerText))
-    currentValue.innerText = number;
-  else if (currentValue.innerText.length < 15)
-    currentValue.innerText = currentValue.innerText + number;
+function addNumber(buttonNumber) {
+  const currentValue = elements.currentValue.innerText;
+  if (currentValue === '0' || !isNum(currentValue))
+    elements.currentValue.innerText = buttonNumber;
+  else if (currentValue.length < 15)
+    elements.currentValue.innerText += buttonNumber;
 }
 
-function addOperator(operator, info, currentValue, equation) {
-  if (info.previousValue === '')
-    info.previousValue = currentValue.innerText;
-  else {
-    info.previousValue = operate(+info.previousValue, info.currentOperator, +currentValue.innerText);
+function addOperator(operator) {
+  let result = elements.currentValue.innerText;
+
+  if (isNum(info.previousValue)) {
+    result = operate();
+    if (!isNum(result)) {
+      clear();
+      elements.currentValue.innerText = result;
+      return;
+    }
   }
+
+  info.previousValue = result;
   info.currentOperator = operator;
-  currentValue.innerText = '0';
-  equation.innerText = `${info.previousValue} ${operator}`;
+  elements.currentValue.innerText = '0';
+  elements.equation.innerText = `${info.previousValue} ${operator}`;
 }
 
-function handleEqual(info, currentValue, equation) {
+function handleEqual() {
   if (info.currentOperator === '') return;
-  const result = operate(+info.previousValue, info.currentOperator, +currentValue.innerText);
+  const result = operate();
   if (isNum(result)) {
-    equation.innerText = `${info.previousValue} ${info.currentOperator} ${currentValue.innerText} =`;
-    info.previousValue = currentValue.innerText;
-    currentValue.innerText = result;
+    elements.equation.innerText = `${info.previousValue} ${info.currentOperator} ${elements.currentValue.innerText} =`;
+    info.previousValue = elements.currentValue.innerText;
   }
-  else {
-    clear(info, currentValue, equation);
-    currentValue.innerText = 'Math error';
-  }
+  else
+    clear();
+  
+  elements.currentValue.innerText = result;
 }
 
-function operate(a, operator, b) {
-  const f = op => {
-    switch (op) {
+function operate() {
+  const f = operator => {
+    switch (operator) {
       case '+':
         return (a, b) => a + b;
       case '-':
@@ -79,34 +85,37 @@ function operate(a, operator, b) {
         return () => console.error('Invalid Operator');
     }
   }
-  
-  return f(operator)(a, b);
+
+  const a = info.previousValue;
+  const b = elements.currentValue.innerText;
+  const operator = info.currentOperator;
+  const result = f(operator)(a, b);
+
+  return isNum(result) ? result : 'Math error';
 }
 
-function deleteInput(currentValue) {
-  currentValue.innerText = currentValue.innerText.slice(0, -1);
-  if (currentValue.innerText.length === 0) 
-    currentValue.innerText = '0';
+function deleteInput() {
+  elements.currentValue.innerText = elements.currentValue.innerText.slice(0, -1);
+  if (elements.currentValue.innerText.length === 0) 
+    elements.currentValue.innerText = '0';
 }
 
-function clear(info, currentValue, equation) {
+function clear() {
   info.currentOperator = info.previousValue = '';
-  equation.innerText = '';
-  currentValue.innerText = '0';
+  elements.equation.innerText = '';
+  elements.currentValue.innerText = '0';
 }
 
-function toggleSign(currentValue) {
-  currentValue.innerText = -1 * (+currentValue.innerText);
+function toggleSign() {
+  elements.currentValue.innerText = -1 * (+elements.currentValue.innerText);
 }
 
-function addPoint(currentValue) {
-  if (currentValue.innerText.includes('.')) return;
-  currentValue.innerText = currentValue.innerText + '.';
+function addPoint() {
+  if (elements.currentValue.innerText.includes('.')) return;
+  elements.currentValue.innerText += '.';
 }
 
 function isNum(num) {
-  if (isFinite(num) && !isNaN(num))
-    return true;
-
-  return false;
+  num = parseInt(num);
+  return isNaN(num) ? false : true;
 }
