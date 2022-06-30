@@ -38,6 +38,7 @@ function addNumber(buttonNumber) {
 }
 
 function addOperator(operator) {
+  if (!isNum(elements.currentValue.innerText)) return;
   let result = elements.currentValue.innerText;
 
   if (isNum(info.previousValue)) {
@@ -51,8 +52,8 @@ function addOperator(operator) {
 
   info.previousValue = result;
   info.currentOperator = operator;
-  elements.currentValue.innerText = '0';
   elements.equation.innerText = `${info.previousValue} ${operator}`;
+  elements.currentValue.innerText = '0';
 }
 
 function handleEqual() {
@@ -62,8 +63,10 @@ function handleEqual() {
     elements.equation.innerText = `${info.previousValue} ${info.currentOperator} ${elements.currentValue.innerText} =`;
     info.previousValue = elements.currentValue.innerText;
   }
-  else
-    clear();
+  else {
+    info.currentOperator = info.previousValue = '';
+    elements.equation.innerText = '';
+  }
   
   elements.currentValue.innerText = result;
 }
@@ -115,7 +118,4 @@ function addPoint() {
   elements.currentValue.innerText += '.';
 }
 
-function isNum(num) {
-  num = parseInt(num);
-  return isNaN(num) ? false : true;
-}
+const isNum = num => !(isNaN(num) && isNum(parseFloat(num)));
