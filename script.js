@@ -109,6 +109,7 @@ function operate() {
 }
 
 function deleteInput() {
+  if (!isNum(elements.currentValue.innerText)) return;
   elements.currentValue.innerText = elements.currentValue.innerText.slice(0, -1);
   if (elements.currentValue.innerText.length === 0) 
     elements.currentValue.innerText = '0';
