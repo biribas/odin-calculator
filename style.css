@@ -19,6 +19,7 @@ body {
 #calculator {
   display: flex;
   flex-direction: column;
+  margin: auto 0;
   border: 0.5rem solid #555555;
   border-radius: 3%;
   height: 30rem;
@@ -101,4 +102,32 @@ body {
 
 #point, #equal, #sign {
   background-color: #63bfc4;
+}
+
+footer {
+  padding: 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+  color: #e3b261;
+}
+
+a {
+  position: relative;
+  text-decoration: none;
+  color: #e3b261;
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: 0.1rem;
+  left: 0;
+  border-bottom: 1px solid #e3b261;
+  width: 100%;
+  transition: width .1s;
+  pointer-events: none;
+}
+
+a:hover::after {
+  width: 0%;
 }
